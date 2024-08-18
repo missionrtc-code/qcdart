@@ -1,17 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:qcdart/responsive_widget.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ForgetScreen extends StatefulWidget {
+  const ForgetScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgetScreen> createState() => _ForgetScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgetScreenState extends State<ForgetScreen> {
   final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -76,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const Align(
                                   alignment: AlignmentDirectional.topStart,
                                   child: Text(
-                                    'Welcome to QCDart!',
+                                    'Forget Password',
                                     style: TextStyle(
                                       fontSize: 24.0,
                                       fontWeight: FontWeight.bold,
@@ -91,19 +90,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter your email id';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 16.0),
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Password',
-                                  ),
-                                  obscureText: true,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your password';
                                     }
                                     return null;
                                   },
@@ -130,26 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                             BorderRadius.circular(8.0),
                                       ),
                                     ),
-                                    child: const Text('Login'),
+                                    child: const Text('Submit'),
                                   ),
                                 ),
                                 const SizedBox(
                                   height: 12,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Checkbox(
-                                      value:
-                                          false, // Replace false with the desired initial value
-                                      onChanged: (value) {
-                                        // Handle checkbox value change
-                                      },
-                                    ),
-                                    const Text('Remember me'),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 16,
                                 ),
                                 Row(
                                   mainAxisAlignment:
@@ -157,28 +128,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                   children: <Widget>[
                                     Text.rich(
                                       TextSpan(
-                                        text: 'Register',
+                                        text: 'Login',
                                         style: const TextStyle(
                                           decoration: TextDecoration.none,
                                           color: Colors.blue,
                                         ),
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
-                                            Navigator.pushNamed(
-                                                context, '/register');
+                                            Navigator.pushNamed(context, '/');
                                           },
                                       ),
                                     ),
                                     Text.rich(
                                       TextSpan(
-                                        text: 'Forget Password?',
+                                        text: 'Register',
                                         style: const TextStyle(
                                             decoration: TextDecoration.none,
                                             color: Colors.blue),
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
                                             Navigator.pushNamed(
-                                                context, '/forget');
+                                                context, '/register');
                                           },
                                       ),
                                     ),
