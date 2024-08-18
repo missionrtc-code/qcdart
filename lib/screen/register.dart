@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qcdart/component/register/address_details.dart';
 import 'package:qcdart/component/register/basic_details.dart';
 import 'package:qcdart/component/register/confirmation.dart';
@@ -15,12 +16,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     super.initState();
-    RegisterState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<RegisterState>(context, listen: false).reset();
+    });
   }
 
   @override
@@ -64,9 +65,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ? height * 0.032
                           : height * 0.12),
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
+                  child: Consumer<RegisterState>(
+                      builder: (context, registerState, child) {
+                    return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -80,47 +81,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                         ),
-                        _switchWidget(),
+                        _switchWidget(registerState.selectedTabIndex),
                         const SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                              onPressed: () {
-                                if (RegisterState().selectedTabIndex == 0) {
-                                  Navigator.of(context).pushNamed('/');
-                                } else {
-                                  RegisterState().back();
-                                  setState(() {});
-                                }
-                              },
-                              child: RegisterState().selectedTabIndex == 0 ? const Text('Login') : const Text('Back'),
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                              onPressed: () {
-                                if (_formKey.currentState?.validate() ??
-                                    false) {
-                                  RegisterState().next();
-                                  setState(() {});
-                                }
-                              },
-                              child: const Text('Next'),
-                            )
-                          ],
-                        ),
                       ],
-                    ),
-                  ),
+                    );
+                  }),
                 ),
               ),
             ],
@@ -131,9 +96,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 }
 
-Widget _switchWidget() {
-  int index = RegisterState().selectedTabIndex;
-  switch (index) {
+Widget _switchWidget(selectedTabIndex) {
+  switch (selectedTabIndex) {
     case 0:
       return const BasicDetails();
     case 1:
@@ -143,6 +107,6 @@ Widget _switchWidget() {
     case 3:
       return AddressDetails();
     default:
-      return const Confirmation(name: 'Shubham');
+      return Confirmation();
   }
 }

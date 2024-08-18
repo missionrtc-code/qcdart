@@ -1,121 +1,262 @@
 import 'package:flutter/material.dart';
-import 'package:qcdart/lib/load_countries.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'dart:convert';
+
+import 'package:qcdart/state/register_state.dart';
 
 class AddressDetails extends StatefulWidget {
+  const AddressDetails({super.key});
+
   @override
   State<AddressDetails> createState() => _AddressDetailsState();
 }
 
 class _AddressDetailsState extends State<AddressDetails> {
+  final _formKey = GlobalKey<FormState>();
+
+  static const String apiKey =
+      'MmVQWUU3ZDJ4WElkT2xUNkxIV2VIRkRVWmFNYVlnYkpwRmVYMkRFWg==';
+  static const String baseUrl = 'https://api.countrystatecity.in/v1';
+
+  List<dynamic> countries = [];
+  List<dynamic> states = [];
+  List<dynamic> cities = [];
+
+  String? selectedCountry;
+  String? selectedState;
+  String? selectedCity;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCountries();
+  }
+
+  Future<void> fetchCountries() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/countries'),
+      headers: {'X-CSCAPI-KEY': apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        countries = json.decode(response.body);
+      });
+    } else {
+      throw Exception('Failed to load countries');
+    }
+  }
+
+  Future<void> fetchStates(String countryCode) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/countries/$countryCode/states'),
+      headers: {'X-CSCAPI-KEY': apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        states = json.decode(response.body);
+        cities = [];
+        selectedState = null;
+        selectedCity = null;
+      });
+    } else {
+      throw Exception('Failed to load states');
+    }
+  }
+
+  Future<void> fetchCities(String countryCode, String stateCode) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/countries/$countryCode/states/$stateCode/cities'),
+      headers: {'X-CSCAPI-KEY': apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        cities = json.decode(response.body);
+        selectedCity = null;
+      });
+    } else {
+      throw Exception('Failed to load cities');
+    }
+  }
+
+  String getCountryCode(String countryName) {
+    for (var country in countries) {
+      if (country['name'] == countryName) {
+        return country['iso2'];
+      }
+    }
+    return '';
+  }
+
+  String getStateCode(String stateName) {
+    for (var state in states) {
+      if (state['name'] == stateName) {
+        return state['iso2'];
+      }
+    }
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: const Key('address_form'),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        children: [
-          const Align(
-            alignment: AlignmentDirectional.topStart,
-            child: Text(
-              'Address details',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 10),
-      
-          FutureBuilder(
-            future: fetchCountries(), 
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return DropdownButtonFormField(
-                  key: const Key('country'),
-                  decoration: const InputDecoration(
-                    labelText: 'Country',
-                    border: OutlineInputBorder(),
+    return Consumer<RegisterState>(
+      builder: (context, registerState, child) {
+        return Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            children: [
+              const Align(
+                alignment: AlignmentDirectional.topStart,
+                child: Text(
+                  'Address details',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 10),
+        
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Country',
+                  border: OutlineInputBorder(),
+                ),
+                value: selectedCountry,
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a country';
+                  }
+                  return null;
+                },
+                onSaved: (newValue) => registerState.setCountry(newValue!),
+                items: countries.map<DropdownMenuItem<String>>((dynamic value) {
+                  return DropdownMenuItem<String>(
+                    value: value['name'],
+                    child: Text(value['name']),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedCountry = newValue;
+                    if (selectedCountry != null) {
+                      fetchStates(getCountryCode(selectedCountry!));
+                    }
+                  });
+                },
+              ),
+        
+              const SizedBox(height: 10),
+        
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'State',
+                  border: OutlineInputBorder(),
+                ),
+                value: selectedState,
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a state';
+                  }
+                  return null;
+                },
+                items: states.map<DropdownMenuItem<String>>((dynamic value) {
+                  return DropdownMenuItem<String>(
+                    value: value['name'],
+                    child: Text(value['name']),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedState = newValue;
+                    if (selectedCountry != null && selectedState != null) {
+                      fetchCities(getCountryCode(selectedCountry!),
+                          getStateCode(selectedState!));
+                    }
+                  });
+                },
+              ),
+        
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                    labelText: 'City', border: OutlineInputBorder()),
+                value: selectedCity,
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a city';
+                  }
+                  return null;
+                },
+                items: cities.map<DropdownMenuItem<String>>((dynamic value) {
+                  return DropdownMenuItem<String>(
+                    value: value['name'],
+                    child: Text(value['name']),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedCity = newValue;
+                  });
+                },
+              ),
+        
+              const SizedBox(height: 10),
+              TextFormField(
+                key: const Key('pincode'),
+                decoration: const InputDecoration(
+                  labelText: 'Pincode',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty || value.length < 6) {
+                    return 'Please enter a valid pincode';
+                  }
+                  return null;
+                },
+              ),
+        
+              const SizedBox(height: 10),
+              TextFormField(
+                key: const Key('address'),
+                maxLines: null,
+                decoration: const InputDecoration(
+                  labelText: 'Address',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your address';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      registerState.back();
+                    },
+                    child: const Text('Back'),
                   ),
-                  items: snapshot.data as List<DropdownMenuItem<String>>,
-                  onChanged: (value) {},
-                  validator: (value) => value == null ? 'Please select a country' : null,
-                  hint: const Text('Select Country'),
-                );
-              }
-            },
+                  const SizedBox(width: 10),
+                  FilledButton(
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        registerState.next();
+                      }
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              )
+            ],
           ),
-      
-          const SizedBox(height: 10),
-      
-          // country.isNotEmpty ?
-          // DropdownButtonFormField(
-          //   key: const Key('state'),
-          //   decoration: const InputDecoration(
-          //     labelText: 'State',
-          //     border: OutlineInputBorder(),
-          //   ),
-          //   items: _countries,
-          //   onChanged: (value) {
-          //     print(value);
-          //   },
-          //   hint: const Text('Select State'),
-          // ) : const SizedBox.shrink(),
-      
-          const SizedBox(height: 10),
-          DropdownButtonFormField(
-            key: const Key('city'),
-            decoration: const InputDecoration(
-              labelText: 'City',
-              border: OutlineInputBorder(),
-            ),
-            items: _countries,
-            onChanged: (value) {
-              print(value);
-            },
-            hint: const Text('Select City'),
-          ),
-      
-          const SizedBox(height: 10),
-          TextFormField(
-            key: const Key('pincode'),
-            decoration: const InputDecoration(
-              labelText: 'Pincode',
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value!.isEmpty || value.length < 6) {
-                return 'Please enter a valid pincode';
-              }
-              return null;
-            },
-          ),
-      
-          const SizedBox(height: 10),
-          TextFormField(
-            key: const Key('address'),
-            maxLines: null,
-            decoration: const InputDecoration(
-              labelText: 'Address',
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter your address';
-              }
-              return null;
-            },
-          )
-        ],
-      ),
+        );
+      }
     );
   }
 }
-
-
-List<DropdownMenuItem<String>> _countries = [
-  DropdownMenuItem(child: Text('USA'), value: 'USA'),
-  DropdownMenuItem(child: Text('Canada'), value: 'Canada'),
-  DropdownMenuItem(child: Text('Mexico'), value: 'Mexico'),
-];
