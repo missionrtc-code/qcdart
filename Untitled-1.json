@@ -1,0 +1,13 @@
+curl --location 'http://35.200.159.118/register' \
+--header 'Content-Type: application/json' \
+--data '{
+    "firstname": "firstname",
+    "lastname": "lastname",
+    "email": "*******",
+    "role_name": "orgAdmin",
+    "password": "abcd",
+    "organisation_name": "Etofi3",
+    "state": "MH",
+    "phone":"",
+    "country":""
+}'

@@ -1,16 +1,7 @@
 class CheckListState {
-  static final CheckListState _instance = CheckListState._internal();
-  factory CheckListState() => _instance;
-
-  // Properties
   List<Checklist> _checklist = [];
 
-  CheckListState._internal(){
-    _checklist = [
-      Checklist(id: 1, checklist: 'Checklist 1', lastUpdate: 'Checklist 1', updatedBy: 'Checklist 1'),
-    ];
-  }
-
+  set checklist(List<Checklist> value) => _checklist = value;
   List<Checklist> get checklist => _checklist;
 }
 

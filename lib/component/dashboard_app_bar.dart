@@ -10,21 +10,17 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Theme.of(context).primaryColor,
       automaticallyImplyLeading: false,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'QC Dart',
-            style: TextStyle(
-              color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-          ),
-          Row(
-            children: [
-              link(context, "Manage", "/dashboard/manage"),
-            ],
-          ),
-        ],
+      title: Text(
+        'QC AUDITS',
+        style: TextStyle(
+          color: Theme.of(context).scaffoldBackgroundColor,
+        ),
+      ),
+      leading: IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
       ),
     );
   }

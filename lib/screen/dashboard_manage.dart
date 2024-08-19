@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qcdart/component/dashboard_app_bar.dart';
+import 'package:qcdart/component/dashboard_app_drawer.dart';
+import 'package:qcdart/state/check_list_clause_list_state.dart';
 import 'package:qcdart/state/check_list_state.dart';
 
 class DashboardManageScreen extends StatefulWidget {
@@ -22,6 +25,7 @@ class _DashboardManageScreenState extends State<DashboardManageScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: DashboardAppBar(),
+        drawer: MyDashboardDrawer(),
         body: Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
@@ -141,14 +145,29 @@ class _DashboardManageScreenState extends State<DashboardManageScreen> {
   }
 
   void _showCreateDialog(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Add Checklist'),
-          content: TextField(
-            decoration: InputDecoration(hintText: 'Enter checklist name'),
-          ),
+          content: Consumer<CheckListClauseListState>(
+              builder: (context, checkListClauseListState, child) {
+            return Form(
+              key: _formKey,
+              child: TextFormField(
+                decoration: InputDecoration(labelText: 'Checklist'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter checklist';
+                  }
+                  return null;
+                },
+                onSaved: (newValue) =>
+                    checkListClauseListState.setCheckListName = newValue!,
+              ),
+            );
+          }),
           actions: [
             TextButton(
               child: Text('Cancel'),
@@ -159,9 +178,11 @@ class _DashboardManageScreenState extends State<DashboardManageScreen> {
             TextButton(
               child: Text('Save'),
               onPressed: () {
-                // TODO: Implement save action
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/dashboard/manage/edit');
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushNamed('/dashboard/manage/edit');
+                }
               },
             ),
           ],

@@ -23,7 +23,7 @@ class _ConfirmationState extends State<Confirmation> {
           children: [
             const Align( alignment: AlignmentDirectional.topStart, child: Text('Confirmation: Your Details are Being Processed', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),),
             const SizedBox(height: 16),
-            text("Dear ${"Shubham More"},"),
+            text("Dear ${registerState.fname},"),
             const SizedBox(height: 16),
             text("We would like to inform you that we have received your details and are currently in the process of reviewing and processing them. We appreciate your patience and cooperation throughout this procedure."),
             sizedBox,

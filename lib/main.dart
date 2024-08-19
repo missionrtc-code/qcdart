@@ -5,7 +5,9 @@ import 'package:qcdart/screen/dashboard_manage.dart';
 import 'package:qcdart/screen/forget.dart';
 import 'package:qcdart/screen/login.dart';
 import 'package:provider/provider.dart';
+import 'package:qcdart/screen/logo.dart';
 import 'package:qcdart/screen/register.dart';
+import 'package:qcdart/state/check_list_clause_list_state.dart';
 import 'package:qcdart/state/register_state.dart';
 
 Future<void> main() async {
@@ -13,19 +15,23 @@ Future<void> main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => RegisterState()),
+      ChangeNotifierProvider(create: (context) => CheckListClauseListState()),
     ],
     child: MyApp(),
   ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'QC Audit',
       themeMode: ThemeMode.dark,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -35,9 +41,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      initialRoute: '/register',
+      initialRoute: '/dashboard/manage/edit',
       routes: {
-        '/': (context) => const LoginScreen(),
+        '/': (context) => const LogoScreen(),
+        '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/forget': (context) => const ForgetScreen(),
         '/dashboard': (context) => const DashboardScreen(),

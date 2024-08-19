@@ -34,7 +34,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                         color: Theme.of(context).primaryColor,
                         child: Center(
                           child: Text(
-                            'QC Dart',
+                            'QC AUDITS',
                             style: TextStyle(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               fontSize: 40.0,
@@ -147,8 +147,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                                             color: Colors.blue),
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
-                                            Navigator.pushNamed(
-                                                context, '/register');
+                                            Navigator.pushNamed( context, '/register');
                                           },
                                       ),
                                     ),

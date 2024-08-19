@@ -74,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const Align(
                           alignment: AlignmentDirectional.topStart,
                           child: Text(
-                            'Welcome to QCDart!',
+                            'Welcome to QC AUDITS!',
                             style: TextStyle(
                               fontSize: 24.0,
                               fontWeight: FontWeight.bold,

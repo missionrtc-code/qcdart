@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qcdart/component/dashboard_app_bar.dart';
 import 'package:qcdart/state/check_list_clause_list_state.dart';
 
@@ -11,7 +12,8 @@ class DashboardEditManageScreen extends StatefulWidget {
 }
 
 class _DashboardEditManageScreenState extends State<DashboardEditManageScreen> {
-  final List<String> _clauseOptions = List.generate(50, (index) => (index + 1).toString());
+  final List<String> _clauseOptions =
+      List.generate(50, (index) => (index + 1).toString());
   final List<String> _riskLevels = [
     'Catastrophic',
     'Major',
@@ -38,50 +40,75 @@ class _DashboardEditManageScreenState extends State<DashboardEditManageScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Edit Manage',
-                      style: Theme.of(context).textTheme.headlineMedium),
+                  Consumer<CheckListClauseListState>(
+                      builder: (context, checkListClauseListState, child) {
+                    return Text(checkListClauseListState.getCheckListName,
+                        style: Theme.of(context).textTheme.headlineMedium);
+                  }),
                   ElevatedButton(
                     onPressed: () {
                       _showCreateDialog(context);
                     },
-                    child: Text('Add Row'),
+                    child: const Text('Add Row'),
                   ),
                 ],
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: CheckListClauseListState().tableRowData.length,
-                  itemBuilder: (context, index) {
-                    final data = CheckListClauseListState().tableRowData[index];
-                    return Card(
-                      margin: EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            _buildCardRow('Clause:', data.clause),
-                            _buildCardRow('Sub Clause:', data.subClause),
-                            _buildCardRow(
-                                'Clause Details:', data.clauseDetails),
-                            _buildCardRow('Help Topic:', data.helpTopic),
-                            _buildCardRow(
-                                'Clause Category:', data.clauseCategory),
-                            _buildCardRow('Rating:', data.rating),
-                            _buildCardRow('Risk Level:', data.riskLevel),
-                          ],
+                child: Consumer<CheckListClauseListState>(
+                    builder: (context, checkListClauseListState, child) {
+                  return ListView.builder(
+                    itemCount: checkListClauseListState.tableRowData.length,
+                    itemBuilder: (context, index) {
+                      final data = checkListClauseListState.tableRowData[index];
+                      return Card(
+                        margin: const EdgeInsets.all(8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              _buildCardRow('Clause:', data.clause),
+                              _buildCardRow('Sub Clause:', data.subClause),
+                              _buildCardRow(
+                                  'Clause Details:', data.clauseDetails),
+                              _buildCardRow('Help Topic:', data.helpTopic),
+                              _buildCardRow(
+                                  'Clause Category:', data.clauseCategory),
+                              _buildCardRow('Rating:', data.rating),
+                              _buildCardRow('Risk Level:', data.riskLevel),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      checkListClauseListState
+                                          .removeTableRowData(data);
+                                    },
+                                    child: const Text('Delete'),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  );
+                }),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
-                    child: Text('Submit'),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Data submitted successfully'),
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Submit'),
                   ),
                 ],
               ),
@@ -93,47 +120,57 @@ class _DashboardEditManageScreenState extends State<DashboardEditManageScreen> {
   }
 
   void _showCreateDialog(BuildContext context) {
-    AddRowDialog addRowDialog = AddRowDialog(
-      clauseOptions: _clauseOptions,
-      riskLevels: _riskLevels,
-      categories: _categories,
-    );
+    final formKey = GlobalKey<FormState>();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Row'),
-          content: addRowDialog,
+          title: const Text('Add Row'),
+          content: AddRowDialog(
+              clauseOptions: _clauseOptions,
+              riskLevels: _riskLevels,
+              categories: _categories,
+              formKey: formKey),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                print("addRowDialog._clause ${addRowDialog._clause}");
-                // Read the form data here
-                // final clause = formKey.currentState!.toString();
-                // final subClause = formKey.currentState!.value['subClause'];
-                // final clauseDetails = formKey.currentState!.value['clauseDetails'];
-                // final helpTopic = formKey.currentState!.value['helpTopic'];
-                // final clauseCategory = formKey.currentState!.value['clauseCategory'];
-                // final rating = formKey.currentState!.value['rating'];
-                // final riskLevel = formKey.currentState!.value['riskLevel'];
-
-                // Do something with the form data
-                // print('Sub Clause: $subClause');
-                // print('Clause Details: $clauseDetails');
-                // print('Help Topic: $helpTopic');
-                // print('Clause Category: $clauseCategory');
-                // print('Rating: $rating');
-                // print('Risk Level: $riskLevel');
-
-              },
-              child: Text('Save'),
-            ),
+            Consumer<CheckListClauseListState>(
+                builder: (context, checkListClauseListState, child) {
+              return ElevatedButton(
+                onPressed: () {
+                  if (checkListClauseListState.tableRowData.length >= 10) {
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Maximum 10 rows are allowed'),
+                      ),
+                    );
+                    return;
+                  }
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    checkListClauseListState.addTableRowData(TableRowData(
+                      clause: checkListClauseListState.getClause,
+                      subClause: checkListClauseListState.getSubClause,
+                      clauseDetails: checkListClauseListState.getClauseDetails,
+                      helpTopic: checkListClauseListState.getHelpTopic,
+                      clauseCategory:
+                          checkListClauseListState.getClauseCategory,
+                      rating: checkListClauseListState.getRating,
+                      riskLevel: checkListClauseListState.getRiskLevel,
+                    ));
+                    // print(object);
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const Text('Save'),
+              );
+            }),
           ],
         );
       },
@@ -146,7 +183,7 @@ class _DashboardEditManageScreenState extends State<DashboardEditManageScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
           Expanded(child: Text(value, textAlign: TextAlign.end)),
         ],
       ),
@@ -154,285 +191,144 @@ class _DashboardEditManageScreenState extends State<DashboardEditManageScreen> {
   }
 }
 
-class AddRowDialog extends StatelessWidget {
+class AddRowDialog extends StatefulWidget {
   final List<String> clauseOptions;
   final List<String> riskLevels;
   final List<String> categories;
-  final _formKey = GlobalKey<FormState>();
-  late String _clause;
-  late String _subClause;
-  late String _clauseDetails;
-  late String _helpTopic;
-  late String _clauseCategory;
-  late String _rating;
-  late String _riskLevel;  
 
-  AddRowDialog({super.key, required this.clauseOptions, required this.riskLevels, required this.categories});
+  GlobalKey<FormState> formKey;
+
+  AddRowDialog(
+      {super.key,
+      required this.clauseOptions,
+      required this.riskLevels,
+      required this.categories,
+      required this.formKey});
 
   @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          DropdownButtonFormField(
-            key: Key('clause'),
-            value: _clause,
-            items: clauseOptions
-                .map((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              _clause = value.toString();
-            },
-          ),
-          TextFormField(
-            key: Key('subClause'),
-            initialValue: _subClause,
-            decoration: InputDecoration(labelText: 'Sub Clause'),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter sub clause';
-              }
-              return null;
-            },
-            onSaved: (value) {
-              _subClause = value!;
-            },
-          ),
-          TextFormField(
-            key: Key('clauseDetails'),
-            initialValue: _clauseDetails,
-            decoration: InputDecoration(labelText: 'Clause Details'),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter clause details';
-              }
-              return null;
-            },
-            onSaved: (value) {
-              _clauseDetails = value!;
-            },
-          ),
-          TextFormField(
-            key: Key('helpTopic'),
-            initialValue: _helpTopic,
-            decoration: InputDecoration(labelText: 'Help Topic'),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter help topic';
-              }
-              return null;
-            },
-            onSaved: (value) {
-              _helpTopic = value!;
-            },
-          ),
-          DropdownButtonFormField(
-            key: Key('clauseCategory'),
-            value: _clauseCategory,
-            items: categories
-                .map((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              _clauseCategory = value.toString();
-            },
-          ),
-          TextFormField(
-            key: Key('rating'),
-            initialValue: _rating,
-            decoration: InputDecoration(labelText: 'Rating'),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter rating';
-              }
-              return null;
-            },
-            onSaved: (value) {
-              _rating = value!;
-            },
-          ),
-          DropdownButtonFormField(
-            key: Key('riskLevel'),
-            value: _riskLevel,
-            items: riskLevels
-                .map((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              _riskLevel = value.toString();
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  State<AddRowDialog> createState() => _AddRowDialogState();
 }
 
-// class AddRowDialog extends StatefulWidget {
-//   const AddRowDialog(
-//       {super.key,
-//       required List<String> clauseOptions,
-//       required List<String> riskLevels,
-//       required List<String> categories})
-//       : _clauseOptions = clauseOptions,
-//         _riskLevels = riskLevels,
-//         _categories = categories;
-
-//   final List<String> _clauseOptions;
-//   final List<String> _riskLevels;
-//   final List<String> _categories;
-
-//   @override
-//   State<AddRowDialog> createState() => _AddRowDialogState(
-//       clauseOptions: _clauseOptions,
-//       riskLevels: _riskLevels,
-//       categories: _categories);
-// }
-
-// class _AddRowDialogState extends State<AddRowDialog> {
-//   final _formKey = GlobalKey<FormState>();
-//   final List<String> clauseOptions;
-//   final List<String> riskLevels;
-//   final List<String> categories;
-//   late String _clause;
-//   late String _subClause;
-//   late String _clauseDetails;
-//   late String _helpTopic;
-//   late String _clauseCategory;
-//   late String _rating;
-//   late String _riskLevel;
-
-//   _AddRowDialogState(
-//       {required this.clauseOptions,
-//       required this.riskLevels,
-//       required this.categories});
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _clause = clauseOptions.first;
-//     _subClause = '';
-//     _clauseDetails = '';
-//     _helpTopic = '';
-//     _clauseCategory = categories.first;
-//     _rating = '';
-//     _riskLevel = riskLevels.first;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     late String clause;
-//     return Form(
-//       key: _formKey,
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           DropdownButtonFormField(
-//             key: Key('clause'),
-//             value: _clause,
-//             items: clauseOptions
-//                 .map((String value) => DropdownMenuItem(
-//                       value: value,
-//                       child: Text(value),
-//                     ))
-//                 .toList(),
-//             onChanged: (value) {
-//               _clause = value.toString();
-//             },
-//           ),
-//           TextFormField(
-//             key: Key('subClause'),
-//             initialValue: _subClause,
-//             decoration: InputDecoration(labelText: 'Sub Clause'),
-//             validator: (value) {
-//               if (value!.isEmpty) {
-//                 return 'Please enter sub clause';
-//               }
-//               return null;
-//             },
-//             onSaved: (value) {
-//               _subClause = value!;
-//             },
-//           ),
-//           TextFormField(
-//             key: Key('clauseDetails'),
-//             initialValue: _clauseDetails,
-//             decoration: InputDecoration(labelText: 'Clause Details'),
-//             validator: (value) {
-//               if (value!.isEmpty) {
-//                 return 'Please enter clause details';
-//               }
-//               return null;
-//             },
-//             onSaved: (value) {
-//               _clauseDetails = value!;
-//             },
-//           ),
-//           TextFormField(
-//             key: Key('helpTopic'),
-//             initialValue: _helpTopic,
-//             decoration: InputDecoration(labelText: 'Help Topic'),
-//             validator: (value) {
-//               if (value!.isEmpty) {
-//                 return 'Please enter help topic';
-//               }
-//               return null;
-//             },
-//             onSaved: (value) {
-//               _helpTopic = value!;
-//             },
-//           ),
-//           DropdownButtonFormField(
-//             key: Key('clauseCategory'),
-//             value: _clauseCategory,
-//             items: categories
-//                 .map((String value) => DropdownMenuItem(
-//                       value: value,
-//                       child: Text(value),
-//                     ))
-//                 .toList(),
-//             onChanged: (value) {
-//               _clauseCategory = value.toString();
-//             },
-//           ),
-//           TextFormField(
-//             key: Key('rating'),
-//             initialValue: _rating,
-//             decoration: InputDecoration(labelText: 'Rating'),
-//             validator: (value) {
-//               if (value!.isEmpty) {
-//                 return 'Please enter rating';
-//               }
-//               return null;
-//             },
-//             onSaved: (value) {
-//               _rating = value!;
-//             },
-//           ),
-//           DropdownButtonFormField(
-//             key: Key('riskLevel'),
-//             value: _riskLevel,
-//             items: riskLevels
-//                 .map((String value) => DropdownMenuItem(
-//                       value: value,
-//                       child: Text(value),
-//                     ))
-//                 .toList(),
-//             onChanged: (value) {
-//               _riskLevel = value.toString();
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+class _AddRowDialogState extends State<AddRowDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CheckListClauseListState>(
+        builder: (context, checkListClauseListState, child) {
+      return Form(
+        key: widget.formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField(
+                key: const Key('clause'),
+                decoration: const InputDecoration(labelText: 'Clause'),
+                items: widget.clauseOptions
+                    .map((String value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                validator: (value) =>
+                    value == null ? 'Please select clause' : null,
+                onChanged: (value) =>
+                    checkListClauseListState.setClause = value.toString(),
+              ),
+              TextFormField(
+                key: const Key('subClause'),
+                decoration: const InputDecoration(labelText: 'Sub Clause'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter sub clause';
+                  }
+                  return null;
+                },
+                onSaved: (value) =>
+                    checkListClauseListState.setSubClause = value!,
+              ),
+              TextFormField(
+                key: const Key('clauseDetails'),
+                decoration: const InputDecoration(labelText: 'Clause Details'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter clause details';
+                  }
+                  return null;
+                },
+                onSaved: (value) =>
+                    checkListClauseListState.setClauseDetails = value!,
+              ),
+              TextFormField(
+                key: const Key('helpTopic'),
+                decoration: const InputDecoration(labelText: 'Help Topic'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter help topic';
+                  }
+                  return null;
+                },
+                onSaved: (value) =>
+                    checkListClauseListState.setHelpTopic = value!,
+              ),
+              DropdownButtonFormField(
+                key: const Key('clauseCategory'),
+                decoration: const InputDecoration(labelText: 'Clause Category'),
+                items: widget.categories
+                    .map((String value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (value) => checkListClauseListState
+                    .setClauseCategory = value.toString(),
+              ),
+                // DropdownButtonFormField(
+                // key: const Key('rating'),
+                // decoration: const InputDecoration(labelText: 'Rating'),
+                // items: widget.clauseOptions
+                //   .map((String value) => DropdownMenuItem(
+                //       value: value,
+                //       child: Text(value),
+                //     ))
+                //   .toList(),
+                // validator: (value) {
+                //   if (value == null) {
+                //   return 'Please enter rating';
+                //   }
+                //   return null;
+                // },
+                // onChanged: (value) => null,
+                // onSaved: (value) => checkListClauseListState.setRating = value.toString(),
+                // ),
+              TextFormField(
+                key: const Key('rating'),
+                decoration: const InputDecoration(labelText: 'Rating'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter rating';
+                  }
+                  return null;
+                },
+                onSaved: (value) => checkListClauseListState.setRating = value!,
+                enabled: checkListClauseListState.getClauseCategory == 'Checkpoint',
+                keyboardType: TextInputType.number,
+              ),
+              DropdownButtonFormField(
+                key: const Key('riskLevel'),
+                decoration: const InputDecoration(labelText: 'Risk Level'),
+                items: widget.riskLevels
+                    .map((String value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (value) =>
+                    checkListClauseListState.setRiskLevel = value.toString(),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}

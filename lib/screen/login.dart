@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:http/http.dart' as http;
 import 'package:qcdart/responsive_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +16,66 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _rememberMe = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (kDebugMode) {
+      _emailController.text = 'rameshjavalkar21@gmail.com';
+      _passwordController.text = 'Ram@123';
+      _rememberMe = true;
+    }
+  }
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://dev.qcdart.com/api/auth/login'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: json.encode({
+          'email': _emailController.text,
+          'password': _passwordController.text,
+          'rememberMe': _rememberMe,
+        }),
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final accessToken = data['access_token'];
+        final expires_in = data['expires_in'];
+        final expiryTime =
+            DateTime.now().add(Duration(seconds: expires_in)).toIso8601String();
+
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('access_token', accessToken);
+        prefs.setString('expiry_time', expiryTime);
+        Navigator.of(context).pushNamedAndRemoveUntil('/dashboard', (route) => false);
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Theme.of(context).primaryColor,
                         child: Center(
                           child: Text(
-                            'QC Dart',
+                            'QC Audit',
                             style: TextStyle(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               fontSize: 40.0,
@@ -76,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const Align(
                                   alignment: AlignmentDirectional.topStart,
                                   child: Text(
-                                    'Welcome to QCDart!',
+                                    'Welcome to QC AUDITS!',
                                     style: TextStyle(
                                       fontSize: 24.0,
                                       fontWeight: FontWeight.bold,
@@ -85,6 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 TextFormField(
+                                  controller: _emailController,
                                   decoration: const InputDecoration(
                                     labelText: 'Email ID',
                                   ),
@@ -97,6 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 TextFormField(
+                                  controller: _passwordController,
                                   decoration: const InputDecoration(
                                     labelText: 'Password',
                                   ),
@@ -110,13 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 SizedBox(
-                                  height:
-                                      40.0, // Replace 50.0 with the desired height
+                                  height: 40.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      if (_formKey.currentState?.validate() ??
-                                          false) {
-                                        // Process login
+                                      if (_formKey.currentState!.validate()) {
+                                        _formKey.currentState!.save();
+                                        _login();
+                                        // print("Email: ${_emailController.text} Password: ${_passwordController.text} Remember Me: $_rememberMe");
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -138,14 +205,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 Row(
                                   children: <Widget>[
-                                    Checkbox(
-                                      value:
-                                          false, // Replace false with the desired initial value
-                                      onChanged: (value) {
-                                        // Handle checkbox value change
+                                    GestureDetector(
+                                      onTap: () {
+                                        _rememberMe = !_rememberMe;
+                                        setState(() {});
                                       },
+                                      child: Row(
+                                        children: <Widget>[
+                                          Checkbox(
+                                            value: _rememberMe,
+                                            onChanged: (value) {
+                                              _rememberMe = value!;
+                                              setState(() {});
+                                            },
+                                          ),
+                                          const Text('Remember me'),
+                                        ],
+                                      ),
                                     ),
-                                    const Text('Remember me'),
                                   ],
                                 ),
                                 const SizedBox(
@@ -164,8 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
-                                            Navigator.pushNamed(
-                                                context, '/register');
+                                            Navigator.pushNamed(context, '/register');
                                           },
                                       ),
                                     ),
@@ -177,8 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             color: Colors.blue),
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
-                                            Navigator.pushNamed(
-                                                context, '/forget');
+                                            Navigator.pushNamed(context, '/forget');
                                           },
                                       ),
                                     ),
