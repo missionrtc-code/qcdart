@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qcdart/screen/dashboard_edit_manage.dart';
 import 'package:qcdart/screen/manage/audit_execution.dart';
 import 'package:qcdart/screen/manage/audit_planning.dart';
 import 'package:qcdart/screen/manage/check_list_management.dart';
 import 'package:qcdart/screen/manage/plant_management.dart';
+import 'package:qcdart/screen/manage/plant_management_edit.dart';
 import 'package:qcdart/screen/manage/user_management.dart';
+import 'package:qcdart/state/check_list_clause_list_state.dart';
 import 'package:qcdart/state/manage_plant_state.dart';
+import 'package:qcdart/state/manage_plants_state.dart';
 import 'package:qcdart/state/register_state.dart';
 
 Future<void> main() async {
@@ -13,8 +17,9 @@ Future<void> main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => RegisterState()),
-      ChangeNotifierProvider(create: (context) => ManagePlantState()),
-      // ChangeNotifierProvider(create: (context) => CheckListClauseListState()),
+      ChangeNotifierProvider(create: (context) => ManagePlantsState()),
+      ChangeNotifierProvider(create: (context) => CheckListClauseListState()),
+      ChangeNotifierProvider(create: (context) => ManagePlantState())
     ],
     child: const MyApp(),
   ));
@@ -53,8 +58,10 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: {
         '/manage': (context) => const PlantManagementScreen(),
+        '/manage/edit': (context) => const PlantManagementEditScreen(),
         '/manage/user': (context) => const UserManagementScreen(),
         '/manage/checklist': (context) => const CheckListManagementScreen(),
+        '/manage/checklist/edit': (context) => const DashboardEditManageScreen(),
         '/manage/audit_planning': (context) => const AuditPlanningScreen(),
         '/manage/audit_execution': (context) => const AuditExecutionScreen(),
       },

@@ -105,8 +105,8 @@ Widget _switchWidget(selectedTabIndex) {
     case 2:
       return const OrganizationDetails();
     case 3:
-      return AddressDetails();
+      return const AddressDetails();
     default:
-      return Confirmation();
+      return const Confirmation();
   }
 }
