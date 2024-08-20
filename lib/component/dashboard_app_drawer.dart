@@ -14,16 +14,48 @@ class MyDashboardDrawer extends StatelessWidget {
           ListTile(
             title: Text('Dashboard'),
             onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/dashboard', (route) => false);
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             },
           ),
-          ListTile(
+          ExpansionTile(
             title: Text('Manage'),
-            onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/dashboard/manage', (route) => false);
-            },
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.arrow_circle_right_outlined),
+                title: Text('Plant Management'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/manage');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.arrow_circle_right_outlined),
+                title: Text('User Management'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/manage/user');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.arrow_circle_right_outlined),
+                title: Text('Checklist Management'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/manage/checklist');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.arrow_circle_right_outlined),
+                title: Text('Audit Planning'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/manage/audit_planning');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.arrow_circle_right_outlined),
+                title: Text('Audit Execution'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/manage/audit_execution');
+                },
+              ),
+            ],
           ),
           ListTile(
             title: Text('Logout'),

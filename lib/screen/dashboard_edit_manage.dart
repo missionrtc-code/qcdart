@@ -196,9 +196,9 @@ class AddRowDialog extends StatefulWidget {
   final List<String> riskLevels;
   final List<String> categories;
 
-  GlobalKey<FormState> formKey;
+  final GlobalKey<FormState> formKey;
 
-  AddRowDialog(
+  const AddRowDialog(
       {super.key,
       required this.clauseOptions,
       required this.riskLevels,

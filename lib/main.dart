@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:qcdart/screen/dashboard.dart';
-import 'package:qcdart/screen/dashboard_edit_manage.dart';
-import 'package:qcdart/screen/dashboard_manage.dart';
-import 'package:qcdart/screen/forget.dart';
-import 'package:qcdart/screen/login.dart';
 import 'package:provider/provider.dart';
-import 'package:qcdart/screen/logo.dart';
-import 'package:qcdart/screen/register.dart';
-import 'package:qcdart/state/check_list_clause_list_state.dart';
+import 'package:qcdart/screen/manage/audit_execution.dart';
+import 'package:qcdart/screen/manage/audit_planning.dart';
+import 'package:qcdart/screen/manage/check_list_management.dart';
+import 'package:qcdart/screen/manage/plant_management.dart';
+import 'package:qcdart/screen/manage/user_management.dart';
+import 'package:qcdart/state/manage_plant_state.dart';
 import 'package:qcdart/state/register_state.dart';
 
 Future<void> main() async {
@@ -15,13 +13,16 @@ Future<void> main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => RegisterState()),
-      ChangeNotifierProvider(create: (context) => CheckListClauseListState()),
+      ChangeNotifierProvider(create: (context) => ManagePlantState()),
+      // ChangeNotifierProvider(create: (context) => CheckListClauseListState()),
     ],
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -32,24 +33,30 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'QC Audit',
-      themeMode: ThemeMode.dark,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
+        primarySwatch: Colors.deepPurple,
+        useMaterial3: false,
+        textTheme: const TextTheme(
+          titleMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ),
       ),
-      darkTheme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      initialRoute: '/dashboard/manage/edit',
+      home: const PlantManagementScreen(),
+      initialRoute: '/',
       routes: {
-        '/': (context) => const LogoScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
-        '/forget': (context) => const ForgetScreen(),
-        '/dashboard': (context) => const DashboardScreen(),
-        '/dashboard/manage': (context) => const DashboardManageScreen(),
-        '/dashboard/manage/edit': (context) => const DashboardEditManageScreen(),
+        '/manage': (context) => const PlantManagementScreen(),
+        '/manage/user': (context) => const UserManagementScreen(),
+        '/manage/checklist': (context) => const CheckListManagementScreen(),
+        '/manage/audit_planning': (context) => const AuditPlanningScreen(),
+        '/manage/audit_execution': (context) => const AuditExecutionScreen(),
       },
     );
   }

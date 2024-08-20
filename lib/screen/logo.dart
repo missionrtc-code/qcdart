@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qcdart/auth/isToken.dart';
 
@@ -11,8 +12,16 @@ class LogoScreen extends StatefulWidget {
 class _LogoScreenState extends State<LogoScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      excuted();
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      if (!kDebugMode) {
+        await Future.delayed(const Duration(seconds: 3));
+      }
+      final token = await isTokenExpired();
+      if (token) {
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      } else {
+        Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
+      }
     });
     super.initState();
   }
