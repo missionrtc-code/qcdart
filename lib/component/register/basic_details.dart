@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:qcdart/auth/app_router.dart';
 import 'package:qcdart/state/register_state.dart';
 
 class BasicDetails extends StatefulWidget {
@@ -132,7 +134,7 @@ class _BasicDetailsState extends State<BasicDetails> {
                 children: [
                   FilledButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      context.goNamed(RoutePath.signIn.name);
                     },
                     child: const Text('Login'),
                   ),

@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qcdart/screen/dashboard_edit_manage.dart';
-import 'package:qcdart/screen/manage/audit_execution.dart';
-import 'package:qcdart/screen/manage/audit_planning.dart';
-import 'package:qcdart/screen/manage/check_list_management.dart';
-import 'package:qcdart/screen/manage/plant_management.dart';
-import 'package:qcdart/screen/manage/plant_management_edit.dart';
-import 'package:qcdart/screen/manage/user_management.dart';
+import 'package:qcdart/auth/app_router.dart';
 import 'package:qcdart/state/check_list_clause_list_state.dart';
 import 'package:qcdart/state/manage_plant_state.dart';
 import 'package:qcdart/state/manage_plants_state.dart';
@@ -25,17 +19,12 @@ Future<void> main() async {
   ));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'QC Audit',
       theme: ThemeData(
@@ -54,17 +43,10 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
-      home: const PlantManagementScreen(),
-      initialRoute: '/',
-      routes: {
-        '/manage': (context) => const PlantManagementScreen(),
-        '/manage/edit': (context) => const PlantManagementEditScreen(),
-        '/manage/user': (context) => const UserManagementScreen(),
-        '/manage/checklist': (context) => const CheckListManagementScreen(),
-        '/manage/checklist/edit': (context) => const DashboardEditManageScreen(),
-        '/manage/audit_planning': (context) => const AuditPlanningScreen(),
-        '/manage/audit_execution': (context) => const AuditExecutionScreen(),
-      },
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
+      routerDelegate: router.routerDelegate,
+      // routerConfig: router,
     );
   }
 }

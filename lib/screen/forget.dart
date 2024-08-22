@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:qcdart/auth/app_router.dart';
 import 'package:qcdart/responsive_widget.dart';
 
 class ForgetScreen extends StatefulWidget {
@@ -29,6 +31,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                       ResponsiveWidget.isSmallScreen(context))
                   ? const SizedBox()
                   : Expanded(
+                    key: const PageStorageKey('login_image'),
                       child: Container(
                         height: height,
                         color: Theme.of(context).primaryColor,
@@ -128,16 +131,14 @@ class _ForgetScreenState extends State<ForgetScreen> {
                                   children: <Widget>[
                                     Text.rich(
                                       TextSpan(
-                                        text: 'Login',
-                                        style: const TextStyle(
-                                          decoration: TextDecoration.none,
-                                          color: Colors.blue,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            Navigator.pushNamed(context, '/');
-                                          },
-                                      ),
+                                          text: 'Login',
+                                          style: const TextStyle(
+                                            decoration: TextDecoration.none,
+                                            color: Colors.blue,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => context.goNamed(
+                                                RoutePath.signIn.name)),
                                     ),
                                     Text.rich(
                                       TextSpan(
@@ -146,9 +147,8 @@ class _ForgetScreenState extends State<ForgetScreen> {
                                             decoration: TextDecoration.none,
                                             color: Colors.blue),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            Navigator.pushNamed( context, '/register');
-                                          },
+                                          ..onTap = () => context
+                                              .goNamed(RoutePath.signUp.name),
                                       ),
                                     ),
                                   ],

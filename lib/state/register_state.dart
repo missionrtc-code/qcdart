@@ -80,7 +80,7 @@ class RegisterState extends ChangeNotifier {
   }
 
   void reset() {
-    _selectedTabIndex = 1;
+    _selectedTabIndex = 0;
     fname = '';
     lname = '';
     email = '';
