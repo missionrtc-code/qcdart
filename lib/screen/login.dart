@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qcdart/auth/app_auth.dart';
 import 'package:qcdart/auth/app_router.dart';
+import 'package:qcdart/lib/auth.dart';
 import 'package:qcdart/responsive_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,14 +24,17 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     if (kDebugMode) {
-      _emailController.text = 'rameshjavalkar21@gmail.com';
-      _passwordController.text = 'Ram@123';
+      _emailController.text = 'abhishek';
+      _passwordController.text = 'abcd';
       _rememberMe = true;
     }
   }
 
   Future<void> _login() async {
-    addToken('token', DateTime.now());
+    final token = await login(_emailController.text, _passwordController.text);
+    if (token == null) return;
+    final expirationTime = DateTime.now().add(const Duration(hours: 1));
+    addToken(token, expirationTime);
     context.goNamed(RoutePath.dashboard.name);
   }
 

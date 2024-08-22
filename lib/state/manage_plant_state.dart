@@ -4,33 +4,47 @@ class ManagePlantState extends ChangeNotifier {
   //-------------------
   // List of plants
   //-------------------
-  List<Plant> _list = [
-    Plant(
-        orgId: 'orgId 1',
-        plantName: 'Plant name 1',
-        plantId: 'Plant id 1',
-        plantType: 'Type 1',
-        email: 'email 1',
-        mobile: 'mobile 1',
-        country: 'country 1',
-        city: 'city 1',
-        pincode: 'pincode 1',
-        contactName: 'contact name 1',
-        address: 'address 1')
-  ];
+  List<Plant> _list = [];
   get list => _list;
   set list(value) {
     _list = value;
     notifyListeners();
   }
 
-  void addPlant(Plant plant) {
-    _list.add(plant);
+  void addPlant() {
+    _list.add(Plant(
+        orgId: orgId,
+        plantName: plantName,
+        plantId: plantId,
+        plantType: plantType,
+        email: email,
+        mobile: mobile,
+        country: country,
+        state: state,
+        city: city,
+        pincode: pincode,
+        contactName: contactName,
+        address: address));
     notifyListeners();
+    resetForm();
   }
 
   void removePlant(Plant plant) {
     _list.remove(plant);
+    notifyListeners();
+  }
+
+  void resetForm() {
+    orgId = '';
+    plantType = '';
+    email = '';
+    mobile = '';
+    country = '';
+    state = '';
+    city = '';
+    pincode = '';
+    contactName = '';
+    address = '';
     notifyListeners();
   }
 
@@ -45,6 +59,7 @@ class ManagePlantState extends ChangeNotifier {
   String _email = '';
   String _mobile = '';
   String _country = '';
+  String _state = '';
   String _city = '';
   String _pincode = '';
   String _contactName = '';
@@ -57,6 +72,7 @@ class ManagePlantState extends ChangeNotifier {
   get email => _email;
   get mobile => _mobile;
   get country => _country;
+  get state => _state;
   get city => _city;
   get pincode => _pincode;
   get contactName => _contactName;
@@ -97,6 +113,11 @@ class ManagePlantState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set state(value) {
+    _state = value;
+    notifyListeners();
+  }
+
   set city(value) {
     _city = value;
     notifyListeners();
@@ -126,6 +147,7 @@ class Plant {
   String email;
   String mobile;
   String country;
+  String state;
   String city;
   String pincode;
   String contactName;
@@ -138,6 +160,7 @@ class Plant {
     required this.email,
     required this.mobile,
     required this.country,
+    required this.state,
     required this.city,
     required this.pincode,
     required this.contactName,

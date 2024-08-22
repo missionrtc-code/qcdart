@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:qcdart/auth/app_router.dart';
 import 'package:qcdart/component/dashboard_app_bar.dart';
 import 'package:qcdart/component/dashboard_app_drawer.dart';
 import 'package:qcdart/state/manage_plant_state.dart';
@@ -114,15 +116,19 @@ class _PlantManagementScreenState extends State<PlantManagementScreen> {
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    // call the api
+
+                    /// api call
 
                     Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed('/manage/edit');
 
                     Provider.of<ManagePlantState>(context, listen: false)
                         .plantName = checkListClauseListState.plantName;
                     Provider.of<ManagePlantState>(context, listen: false)
                         .plantId = '#NA';
+
+                    context.goNamed(
+                        RoutePath.dashboardPlantManagementDetail.name,
+                        pathParameters: {'id': '#NA'});
                   }
                 },
                 child: const Text('Save'),

@@ -60,6 +60,7 @@ class _PlantManagementEditScreenState extends State<PlantManagementEditScreen> {
                               _buildCardRow('Email:', data.email),
                               _buildCardRow('Mobile:', data.mobile),
                               _buildCardRow('Country:', data.country),
+                              _buildCardRow('State', data.state),
                               _buildCardRow('City:', data.city),
                               _buildCardRow('Pincode:', data.pincode),
                               _buildCardRow('Contact Name:', data.contactName),
@@ -112,24 +113,31 @@ class _PlantManagementEditScreenState extends State<PlantManagementEditScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Row'),
-          content: AddRowDialog(formKey: formKey),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save'),
-            )
-          ],
-        );
+        return Consumer<ManagePlantState>(
+            builder: (context, checkListClauseListState, child) {
+          return AlertDialog(
+            title: const Text('Add Row'),
+            content: AddRowDialog(formKey: formKey),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    Navigator.of(context).pop();
+                    checkListClauseListState.addPlant();
+                  }
+                },
+                child: const Text('Save'),
+              )
+            ],
+          );
+        });
       },
     );
   }
@@ -165,6 +173,7 @@ class _AddRowDialogState extends State<AddRowDialog> {
   late TextEditingController _emailController;
   late TextEditingController _mobileController;
   late TextEditingController _countryController;
+  late TextEditingController _stateController;
   late TextEditingController _cityController;
   late TextEditingController _pincodeController;
   late TextEditingController _contactNameController;
@@ -184,6 +193,7 @@ class _AddRowDialogState extends State<AddRowDialog> {
     _pincodeController = TextEditingController();
     _contactNameController = TextEditingController();
     _addressController = TextEditingController();
+    _stateController = TextEditingController();
   }
 
   @override
@@ -195,6 +205,7 @@ class _AddRowDialogState extends State<AddRowDialog> {
     _emailController.dispose();
     _mobileController.dispose();
     _countryController.dispose();
+    _stateController.dispose();
     _cityController.dispose();
     _pincodeController.dispose();
     _contactNameController.dispose();
@@ -213,6 +224,7 @@ class _AddRowDialogState extends State<AddRowDialog> {
       _emailController.text = checkListClauseListState.email;
       _mobileController.text = checkListClauseListState.mobile;
       _countryController.text = checkListClauseListState.country;
+      _stateController.text = checkListClauseListState.state;
       _cityController.text = checkListClauseListState.city;
       _pincodeController.text = checkListClauseListState.pincode;
       _contactNameController.text = checkListClauseListState.contactName;
@@ -261,17 +273,22 @@ class _AddRowDialogState extends State<AddRowDialog> {
                 enabled: false,
                 onSaved: (value) => checkListClauseListState.plantId = value!,
               ),
-              TextFormField(
+              DropdownButtonFormField<String>(
                 key: const Key('plantType'),
-                controller: _plantTypeController,
-                decoration: const InputDecoration(labelText: 'Plant Type'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter plant type';
-                  }
-                  return null;
-                },
-                onSaved: (value) => checkListClauseListState.plantType = value!,
+                decoration: const InputDecoration(
+                  labelText: 'Plant Type',
+                ),
+                items: ["Item 1", "Item 2", "Item 3"]
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (String? newValue) {},
+                validator: (value) =>
+                    value == null ? 'Please select plant type' : null,
+                onSaved: (String? value) =>
+                    checkListClauseListState.plantType = value!,
               ),
               TextFormField(
                 key: const Key('email'),
@@ -310,6 +327,18 @@ class _AddRowDialogState extends State<AddRowDialog> {
                 onSaved: (value) => checkListClauseListState.country = value!,
               ),
               TextFormField(
+                key: const Key('state'),
+                controller: _stateController,
+                decoration: const InputDecoration(labelText: 'State'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter state';
+                  }
+                  return null;
+                },
+                onSaved: (value) => checkListClauseListState.state = value!,
+              ),
+              TextFormField(
                 key: const Key('city'),
                 controller: _cityController,
                 decoration: const InputDecoration(labelText: 'City'),
@@ -343,7 +372,8 @@ class _AddRowDialogState extends State<AddRowDialog> {
                   }
                   return null;
                 },
-                onSaved: (value) => checkListClauseListState.contactName = value!,
+                onSaved: (value) =>
+                    checkListClauseListState.contactName = value!,
               ),
               TextFormField(
                 key: const Key('address'),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
+import 'package:qcdart/auth/app_auth.dart';
+import 'package:qcdart/auth/app_router.dart';
 
 class MyDashboardDrawer extends StatelessWidget {
   const MyDashboardDrawer({super.key});
@@ -14,7 +16,7 @@ class MyDashboardDrawer extends StatelessWidget {
           ListTile(
             title: Text('Dashboard'),
             onTap: () {
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+              context.goNamed(RoutePath.dashboard.name);
             },
           ),
           ExpansionTile(
@@ -24,35 +26,35 @@ class MyDashboardDrawer extends StatelessWidget {
                 leading: Icon(Icons.arrow_circle_right_outlined),
                 title: Text('Plant Management'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/manage');
+                  context.goNamed(RoutePath.dashboardPlantManagement.name);
                 },
               ),
               ListTile(
                 leading: Icon(Icons.arrow_circle_right_outlined),
                 title: Text('User Management'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/manage/user');
+                  // Navigator.pushNamed(context, '/manage/user');
                 },
               ),
               ListTile(
                 leading: Icon(Icons.arrow_circle_right_outlined),
                 title: Text('Checklist Management'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/manage/checklist');
+                  // Navigator.pushNamed(context, '/manage/checklist');
                 },
               ),
               ListTile(
                 leading: Icon(Icons.arrow_circle_right_outlined),
                 title: Text('Audit Planning'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/manage/audit_planning');
+                  // Navigator.pushNamed(context, '/manage/audit_planning');
                 },
               ),
               ListTile(
                 leading: Icon(Icons.arrow_circle_right_outlined),
                 title: Text('Audit Execution'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/manage/audit_execution');
+                  // Navigator.pushNamed(context, '/manage/audit_execution');
                 },
               ),
             ],
@@ -60,12 +62,8 @@ class MyDashboardDrawer extends StatelessWidget {
           ListTile(
             title: Text('Logout'),
             onTap: () async {
-              final prefs = await SharedPreferences.getInstance();
-              prefs.remove('access_token');
-              prefs.remove('expiry_time');
-
-              // TODO: logout
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+              removeToken();
+              context.goNamed(RoutePath.signIn.name);
             },
           ),
         ],

@@ -1,10 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qcdart/auth/app_auth.dart';
 import 'package:qcdart/screen/dashboard.dart';
 import 'package:qcdart/screen/forget.dart';
 import 'package:qcdart/screen/login.dart';
+import 'package:qcdart/screen/manage/plant_management.dart';
+import 'package:qcdart/screen/manage/plant_management_edit.dart';
 import 'package:qcdart/screen/register.dart';
 
 enum RoutePath {
@@ -12,11 +13,24 @@ enum RoutePath {
   signUp(path: 'sign_up'),
   forgetPassword(path: 'forget_password'),
 
-  dashboard(path: '/dashboard');
+  dashboard(path: '/dashboard'),
 
-  const RoutePath({
-    required this.path,
-  });
+  dashboardPlantManagement(path: 'plant_management'),
+  dashboardPlantManagementDetail(path: ':id'),;
+
+  // dashboardUserManagement(path: '/dashboard/user_management'),
+  // dashboardUserManagementDetail(path: '/dashboard/user_management/:id'),
+  
+  // dashboardChecklistManagement(path: '/dashboard/checklist_management'),
+  // dashboardChecklistManagementDetail(path: '/dashboard/checklist_management/:id'),
+  
+  // dashboardAuditPlanning(path: '/dashboard/audit_planning'),
+  // dashboardAuditPlanningDetail(path: '/dashboard/audit_planning/:id'),
+  
+  // dashboardAuditExecution(path: '/dashboard/audit_execution'),
+  // dashboardAuditExecutionDetail(path: '/dashboard/audit_execution/:id');
+
+  const RoutePath({ required this.path });
   final String path;
 }
 
@@ -25,9 +39,6 @@ final router = GoRouter(
   redirect:(context, state) async {
     // Check if the token is expired
     final token = await isTokenExpired();
-
-    // Debug the token and the current route
-    if (kDebugMode) print("Token: $token ${state.topRoute!.name}");
 
     // Redirect to the sign in page if the token is expired
     if (token &&  [RoutePath.signIn.name, RoutePath.signUp.path, RoutePath.forgetPassword.path].contains(state.topRoute!.name)) {
@@ -72,6 +83,24 @@ final router = GoRouter(
       pageBuilder: (context, state) => const MaterialPage(
         child: DashboardScreen(),
       ),
+      routes: [
+        GoRoute(
+          path: RoutePath.dashboardPlantManagement.path,
+          name: RoutePath.dashboardPlantManagement.name,
+          pageBuilder: (context, state) => const MaterialPage(
+            child: PlantManagementScreen(),
+          ),
+          routes: [
+            GoRoute(
+              path: RoutePath.dashboardPlantManagementDetail.path,
+              name: RoutePath.dashboardPlantManagementDetail.name,
+              pageBuilder: (context, state) => const MaterialPage(
+                child: PlantManagementEditScreen(),
+              )
+            )
+          ]
+        ),
+      ]
     ),
   ],
 );
