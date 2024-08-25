@@ -118,7 +118,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add Plant'),
+          title: const Text('Add New User'),
           content: AddUserDialog(formKey: formKey),
           actions: <Widget>[
             TextButton(

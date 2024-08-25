@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
-import 'package:qcdart/auth/app_router.dart';
 import 'package:qcdart/component/dashboard_app_bar.dart';
 import 'package:qcdart/component/dashboard_app_drawer.dart';
 import 'package:qcdart/state/audit_planning.dart';
+import 'package:qcdart/state/audit_planning_detail.dart';
 
 class AuditPlanningScreen extends StatefulWidget {
   const AuditPlanningScreen({super.key});
@@ -75,6 +75,10 @@ class _AuditPlanningScreenState extends State<AuditPlanningScreen> {
                                       onPressed: () => {},
                                       icon: const Icon(Icons.delete),
                                     ),
+                                    IconButton(
+                                      onPressed: () => {},
+                                      icon: const Icon(Icons.notification_add),
+                                    ),
                                   ],
                                 )
                               ],
@@ -113,7 +117,7 @@ class _AuditPlanningScreenState extends State<AuditPlanningScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add Plant'),
+          title: const Text('Audit Planning'),
           content: AuditPlanningDialog(formKey: formKey),
           actions: <Widget>[
             TextButton(
@@ -128,18 +132,7 @@ class _AuditPlanningScreenState extends State<AuditPlanningScreen> {
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-
-                    /// api call
-
                     Navigator.of(context).pop();
-
-                    // Provider.of<ManagePlantState>(context, listen: false)
-                    //     .plantName = checkListClauseListState.plantName;
-                    // Provider.of<ManagePlantState>(context, listen: false)
-                    //     .plantId = '#NA';
-
-                    context.goNamed(RoutePath.dashboardAuditPlanningDetail.name,
-                        pathParameters: {'id': 'NEW'});
                   }
                 },
                 child: const Text('Save'),
@@ -163,7 +156,7 @@ class AuditPlanningDialog extends StatefulWidget {
 class _AuditPlanningDialogState extends State<AuditPlanningDialog> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuditPlanningState>(
+    return Consumer<AuditPlanningDetailState>(
       builder: (context, state, child) {
         return Form(
           key: widget.formKey,
@@ -171,17 +164,156 @@ class _AuditPlanningDialogState extends State<AuditPlanningDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  key: const Key('auditName'),
-                  decoration: const InputDecoration(labelText: 'Audit Name'),
+                DropdownButtonFormField(
+                  decoration: const InputDecoration(labelText: 'Select Plant'),
+                  items: ["Plant 1", "Plant 2", "Plant 3"]
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) => {},
+                  onSaved: (value) => state.plantName = value.toString(),
+                ),
+                SizedBox(height: 10),
+                DropdownButtonFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Select Audit Type'),
+                  items: ["Type 1", "Type 2", "Type 3"]
+                      .map(
+                        (e) => DropdownMenuItem(
+                          child: Text(e),
+                          value: e,
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) => {},
+                  onSaved: (value) => state.auditType = value.toString(),
+                ),
+                FormBuilderDateTimePicker(
+                  name: 'auditDateTime',
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: const InputDecoration(
+                    labelText: 'From Audit Date',
+                    suffixIcon: Icon(Icons.edit_calendar),
+                  ),
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter audit name';
+                    if (value == null) {
+                      return 'Please select a date';
                     }
                     return null;
                   },
-                  // onSaved: (value) => state.plantName = value!,
+                  onChanged: (value) =>
+                      state.startAuditDateTime = value.toString(),
+                  onSaved: (value) =>
+                      state.startAuditDateTime = value.toString(),
                 ),
+                FormBuilderDateTimePicker(
+                  name: 'auditDateTime',
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: const InputDecoration(
+                    labelText: 'To Audit Date',
+                    suffixIcon: Icon(Icons.edit_calendar),
+                  ),
+                  validator: (toDateStr) {
+                    if (toDateStr == null) {
+                      return 'Please select a date';
+                    }
+                  
+                    // Convert string to DateTime
+                    DateTime fromDate = DateTime.parse(state.startAuditDateTime);
+                    DateTime toDate = DateTime.parse(toDateStr.toString());
+                  
+                    // Check if toDate is greater than fromDate
+                    if (toDate.isBefore(fromDate)) {
+                      return 'To Date should be greater than From Date';
+                    }
+                  
+                    return null;
+                  },
+                  onChanged: (value) => state.endAuditDateTime = value.toString(),
+                  onSaved: (value) => state.endAuditDateTime = value.toString(),
+                ),
+                Divider(),
+                SizedBox(height: 10),
+                Text("Lead Auditor"),
+                DropdownButtonFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Select Auditor'),
+                  items: ["Auditor 1", "Auditor 2", "Auditor 3"]
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) => {},
+                ),
+                DropdownButtonFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Select Auditees'),
+                  items: ["Auditee 1", "Auditee 2", "Auditee 3"]
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) => {},
+                ),
+                DropdownButtonFormField(
+                  decoration: const InputDecoration(
+                      labelText: 'Select Audit Checklist'),
+                  items: [
+                    "Audit Checklistd 1",
+                    "Audit Checklist 2",
+                    "Audit Checklist 3"
+                  ]
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) => {},
+                ),
+                Divider(),
+                Text("Support Auditor"),
+                DropdownButtonFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Select Auditor'),
+                  items: ["Auditor 1", "Auditor 2", "Auditor 3"]
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) => {},
+                ),
+                DropdownButtonFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Select Auditees'),
+                  items: ["Auditee 1", "Auditee 2", "Auditee 3"]
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) => {},
+                ),
+                DropdownButtonFormField(
+                  decoration: const InputDecoration(
+                      labelText: 'Select Audit Checklist'),
+                  items: [
+                    "Audit Checklistd 1",
+                    "Audit Checklist 2",
+                    "Audit Checklist 3"
+                  ]
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) => {},
+                ),
+                SizedBox(height: 10),
               ],
             ),
           ),

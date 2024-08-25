@@ -8,7 +8,6 @@ import 'package:qcdart/screen/forget.dart';
 import 'package:qcdart/screen/login.dart';
 import 'package:qcdart/screen/manage/audit_execution.dart';
 import 'package:qcdart/screen/manage/audit_planning.dart';
-import 'package:qcdart/screen/manage/audit_planning_detail.dart';
 import 'package:qcdart/screen/manage/plant_management.dart';
 import 'package:qcdart/screen/manage/plant_management_edit.dart';
 import 'package:qcdart/screen/manage/user_management.dart';
@@ -32,7 +31,6 @@ enum RoutePath {
   dashboardChecklistManagementDetail(path: ':id'),
 
   dashboardAuditPlanning(path: 'audit_planning'),
-  dashboardAuditPlanningDetail(path: ':id'),
 
   dashboardAuditExecution(path: 'audit_execution'),
   dashboardAuditExecutionDetail(path: ':id')
@@ -156,15 +154,6 @@ final router = GoRouter(
           pageBuilder: (context, state) => const MaterialPage(
             child: AuditPlanningScreen(),
           ),
-          routes: [
-            GoRoute(
-              path: RoutePath.dashboardAuditPlanningDetail.path,
-              name: RoutePath.dashboardAuditPlanningDetail.name,
-              pageBuilder: (context, state) => const MaterialPage(
-                child: AuditPlanningDetailScreen(),
-              )
-            )
-          ]
         ),
 
         // Audit execution route

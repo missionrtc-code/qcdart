@@ -279,27 +279,12 @@ class _AddRowDialogState extends State<AddRowDialog> {
                           child: Text(value),
                         ))
                     .toList(),
-                onChanged: (value) => checkListClauseListState
-                    .setClauseCategory = value.toString(),
+                onChanged: (value) {
+                  checkListClauseListState.setClauseCategory = value.toString();
+                  checkListClauseListState.setRating = '';
+                  checkListClauseListState.setRiskLevel = '';
+                },
               ),
-                // DropdownButtonFormField(
-                // key: const Key('rating'),
-                // decoration: const InputDecoration(labelText: 'Rating'),
-                // items: widget.clauseOptions
-                //   .map((String value) => DropdownMenuItem(
-                //       value: value,
-                //       child: Text(value),
-                //     ))
-                //   .toList(),
-                // validator: (value) {
-                //   if (value == null) {
-                //   return 'Please enter rating';
-                //   }
-                //   return null;
-                // },
-                // onChanged: (value) => null,
-                // onSaved: (value) => checkListClauseListState.setRating = value.toString(),
-                // ),
               TextFormField(
                 key: const Key('rating'),
                 decoration: const InputDecoration(labelText: 'Rating'),
@@ -322,8 +307,8 @@ class _AddRowDialogState extends State<AddRowDialog> {
                           child: Text(value),
                         ))
                     .toList(),
-                onChanged: (value) =>
-                    checkListClauseListState.setRiskLevel = value.toString(),
+                onChanged: checkListClauseListState.getClauseCategory == 'Checkpoint' ? (value) => checkListClauseListState.setRiskLevel = value.toString() : null,
+                
               ),
             ],
           ),

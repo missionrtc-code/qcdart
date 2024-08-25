@@ -216,7 +216,7 @@ class _AddRowDialogState extends State<AddRowDialog> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ManagePlantState>(
-        builder: (context, checkListClauseListState, child) {
+      builder: (context, checkListClauseListState, child) {
       _orgIdController.text = checkListClauseListState.orgId;
       _plantNameController.text = checkListClauseListState.plantName;
       _plantIdController.text = checkListClauseListState.plantId;

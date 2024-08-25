@@ -87,49 +87,6 @@ class _CheckListManagementScreenState extends State<CheckListManagementScreen> {
                       }).toList(),
                     ),
                   )),
-
-              // ListView(
-              //   shrinkWrap: true,
-              //   children:
-              //       CheckListState().checklist.asMap().entries.map((entry) {
-              //     int index = entry.key + 1;
-              //     Checklist checklist = entry.value;
-              //     return Card(
-              //       child: ListTile(
-              //         title: Text('$index. ${checklist.checklist}'),
-              //         subtitle: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Text('Last update: ${checklist.lastUpdate}'),
-              //             Row(
-              //               children: [
-              //                 Icon(Icons.person),
-              //                 Text('Updated by: ${checklist.updatedBy}'),
-              //               ],
-              //             ),
-              //           ],
-              //         ),
-              //         trailing: Row(
-              //           mainAxisSize: MainAxisSize.min,
-              //           children: [
-              //             IconButton(
-              //               icon: Icon(Icons.edit),
-              //               onPressed: () {
-              //                 // TODO: Implement edit action
-              //               },
-              //             ),
-              //             IconButton(
-              //               icon: Icon(Icons.delete),
-              //               onPressed: () {
-              //                 // TODO: Implement delete action
-              //               },
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     );
-              //   }).toList(),
-              // )
             ],
           ),
         ),

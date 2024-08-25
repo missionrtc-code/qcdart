@@ -1,81 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AuditPlanningDetailState extends ChangeNotifier {
-  // ------------------------------
-  // Audit Planning Detail
-  // ------------------------------
-  List<AuditPlan> _list = [
-    AuditPlan(
-      plantName: 'Plant 1',
-      auditType: 'Internal',
-
-      auditorsType_1: 'Internal',
-      auditorsType_2: 'External',
-
-      auditorsName_1: 'Auditor 1',
-      auditorsName_2: 'Auditor 2',
-
-      auditees_1: 'Auditee 1',
-      auditees_2: 'Auditee 2',
-
-      auditDateTime: '2022-12-31 23:59:59',
-    ),
-    AuditPlan(
-      plantName: 'Plant 2',
-      auditType: 'External',
-
-      auditorsType_1: 'Internal',
-      auditorsType_2: 'External',
-
-      auditorsName_1: 'Auditor 1',
-      auditorsName_2: 'Auditor 2',
-
-      auditees_1: 'Auditee 1',
-      auditees_2: 'Auditee 2',
-
-      auditDateTime: '2022-12-31 23:59:59',
-    ),
-    AuditPlan(
-      plantName: 'Plant 3',
-      auditType: 'Internal',
-
-      auditorsType_1: 'Internal',
-      auditorsType_2: 'External',
-
-      auditorsName_1: 'Auditor 1',
-      auditorsName_2: 'Auditor 2',
-
-      auditees_1: 'Auditee 1',
-      auditees_2: 'Auditee 2',
-
-      auditDateTime: '2022-12-31 23:59:59',
-    ),
-  ];
-
-  List<AuditPlan> get list => _list;
-  set list(List<AuditPlan> value) {
-    _list = value;
-    notifyListeners();
-  }
-
-  void add(AuditPlan auditPlan) {
-    _list.add(auditPlan);
-    reset();
-    // notifyListeners();
-  }
-
-  void remove(AuditPlan auditPlan) {
-    _list.remove(auditPlan);
-    notifyListeners();
-  }
-
-  void update(AuditPlan auditPlan) {
-    final index = _list.indexWhere((element) => element.plantName == auditPlan.plantName);
-    if (index != -1) {
-      _list[index] = auditPlan;
-      notifyListeners();
-    }
-  }
 
   // ------------------------------
   // Audit Planning Detail Form
@@ -88,7 +13,9 @@ class AuditPlanningDetailState extends ChangeNotifier {
   String _auditorsName_2 = '';
   String _auditees_1 = '';
   String _auditees_2 = '';
-  String _auditDateTime = '';
+
+  String _startAuditDateTime = '';
+  String _endAuditDateTime = '';
 
   String get plantName => _plantName;
   String get auditType => _auditType;
@@ -98,7 +25,9 @@ class AuditPlanningDetailState extends ChangeNotifier {
   String get auditorsName_2 => _auditorsName_2;
   String get auditees_1 => _auditees_1;
   String get auditees_2 => _auditees_2;
-  String get auditDateTime => _auditDateTime;
+
+  String get startAuditDateTime => _startAuditDateTime;
+  String get endAuditDateTime => _endAuditDateTime;
 
   set plantName(String value) {
     _plantName = value;
@@ -140,10 +69,16 @@ class AuditPlanningDetailState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set auditDateTime(String value) {
-    _auditDateTime = value;
+  set startAuditDateTime(String value) {
+    _startAuditDateTime = value;
     notifyListeners();
   }
+
+  set endAuditDateTime(String value) {
+    _endAuditDateTime = value;
+    notifyListeners();
+  }
+
 
   void reset() {
     _plantName = '';
@@ -154,7 +89,9 @@ class AuditPlanningDetailState extends ChangeNotifier {
     _auditorsName_2 = '';
     _auditees_1 = '';
     _auditees_2 = '';
-    _auditDateTime = '';
+
+    _startAuditDateTime = '';
+    _endAuditDateTime = '';
     notifyListeners();
   }
 
@@ -167,7 +104,8 @@ class AuditPlanningDetailState extends ChangeNotifier {
     _auditorsName_2 = auditPlan.auditorsName_2;
     _auditees_1 = auditPlan.auditees_1;
     _auditees_2 = auditPlan.auditees_2;
-    _auditDateTime = auditPlan.auditDateTime;
+    _startAuditDateTime = auditPlan.startAuditDateTime;
+    _endAuditDateTime = auditPlan.endAuditDateTime;
     notifyListeners();
   }
 }
@@ -185,7 +123,8 @@ class AuditPlan {
   final String auditees_1;
   final String auditees_2;
 
-  final String auditDateTime;
+  final String startAuditDateTime;
+  final String endAuditDateTime;
 
   AuditPlan({
     required this.plantName,
@@ -200,6 +139,7 @@ class AuditPlan {
     required this.auditees_1,
     required this.auditees_2,
 
-    required this.auditDateTime,
+    required this.startAuditDateTime,
+    required this.endAuditDateTime,
   });
 }

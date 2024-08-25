@@ -116,7 +116,7 @@ class _BasicDetailsState extends State<BasicDetails> {
               const SizedBox(height: 10),
               IntlPhoneField(
                 focusNode: focusNode,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Phone Number',
                   border: OutlineInputBorder(
                     borderSide: BorderSide(),

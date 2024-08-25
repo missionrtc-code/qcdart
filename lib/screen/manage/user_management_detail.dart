@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:qcdart/component/dashboard_app_bar.dart';
 import 'package:qcdart/component/dashboard_app_drawer.dart';
@@ -15,6 +16,7 @@ class UserManagementDetailScreen extends StatefulWidget {
 
 class _UserManagementDetailScreenState
     extends State<UserManagementDetailScreen> {
+  FocusNode focusNode = FocusNode();
   final List<String> roles = [
     'Item1',
     'Item2',
@@ -94,13 +96,14 @@ class _UserManagementDetailScreenState
                             onSaved: (newValue) => state.email = newValue!,
                           ),
 
-                          TextFormField(
+                          IntlPhoneField(
+                            focusNode: focusNode,
                             decoration: const InputDecoration(
-                              labelText: 'Phone',
+                              labelText: 'Phone Number',
                             ),
-                            validator: (value) =>
-                                value!.isEmpty ? 'Please enter phone' : null,
-                            onSaved: (newValue) => state.phone = newValue!,
+                            languageCode: "en",
+                            onChanged: (phone) {},
+                            onCountryChanged: (country) {},
                           ),
 
                           DropdownButtonHideUnderline(
@@ -189,7 +192,7 @@ class _UserManagementDetailScreenState
                               onChanged: (value) => state.role = value!,
                             ),
                           ),
-                          
+
                           DropdownButtonHideUnderline(
                             child: DropdownButton2<String>(
                               isExpanded: true,
@@ -212,7 +215,8 @@ class _UserManagementDetailScreenState
                                       return InkWell(
                                         onTap: () {
                                           isSelected
-                                              ? selectedPlantMapping.remove(item)
+                                              ? selectedPlantMapping
+                                                  .remove(item)
                                               : selectedPlantMapping.add(item);
                                           //This rebuilds the StatefulWidget to update the button's text
                                           setState(() {});
@@ -283,23 +287,21 @@ class _UserManagementDetailScreenState
                 ),
               ),
 
-              Consumer<UserDetailState>(
-                builder: (context, state, child) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: FilledButton(
-                        onPressed: () {
-                          state.clearUser();
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Submit'),
-                      ),
+              Consumer<UserDetailState>(builder: (context, state, child) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: FilledButton(
+                      onPressed: () {
+                        state.clearUser();
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Submit'),
                     ),
-                  );
-                }
-              ),
+                  ),
+                );
+              }),
             ],
           ),
         ),
