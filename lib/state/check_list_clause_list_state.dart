@@ -1,7 +1,35 @@
 import 'package:flutter/material.dart';
 
 class CheckListClauseListState extends ChangeNotifier {
-  final List<TableRowData> _tableRowData = [];
+  final List<TableRowData> _tableRowData = [
+    TableRowData(
+      clause: 'Clause 1',
+      subClause: 'Sub Clause 1',
+      clauseDetails: 'Clause Details 1',
+      helpTopic: 'Help Topic 1',
+      clauseCategory: 'Clause Category 1',
+      rating: 'Rating 1',
+      riskLevel: 'Risk Level 1',
+    ),
+    TableRowData(
+      clause: 'Clause 2',
+      subClause: 'Sub Clause 2',
+      clauseDetails: 'Clause Details 2',
+      helpTopic: 'Help Topic 2',
+      clauseCategory: 'Clause Category 2',
+      rating: 'Rating 2',
+      riskLevel: 'Risk Level 2',
+    ),
+    TableRowData(
+      clause: 'Clause 3',
+      subClause: 'Sub Clause 3',
+      clauseDetails: 'Clause Details 3',
+      helpTopic: 'Help Topic 3',
+      clauseCategory: 'Clause Category 3',
+      rating: 'Rating 3',
+      riskLevel: 'Risk Level 3',
+    ),
+  ];
 
   List<TableRowData> get tableRowData => _tableRowData;
 

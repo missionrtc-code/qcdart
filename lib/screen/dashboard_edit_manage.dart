@@ -79,12 +79,12 @@ class _DashboardEditManageScreenState extends State<DashboardEditManageScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  ElevatedButton(
+                                  IconButton(
                                     onPressed: () {
                                       checkListClauseListState
                                           .removeTableRowData(data);
                                     },
-                                    child: const Text('Delete'),
+                                    icon: const Icon(Icons.delete),
                                   ),
                                 ],
                               ),

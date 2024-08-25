@@ -2,17 +2,17 @@ import 'package:flutter/foundation.dart';
 
 class RegisterState extends ChangeNotifier {
   int _selectedTabIndex = 0;
-  String fname = "";
-  String lname = "";
-  String email = "";
-  String phone = '';
-  String password = "";
-  String orgName = "";
+  String fname = "Shubham";
+  String lname = "Kumar";
+  String email = "kumar@rareworks.io";
+  String phone = '9390320345';
+  String password = "0000000000";
+  String orgName = "00000000000";
   String country = "";
   String state = ""; 
   String city = ""; 
-  String pincode = ""; 
-  String address = "";
+  String pincode = "411057"; 
+  String address = "Pune 411057";
 
   void setFname(String value) {
     fname = value;
@@ -81,10 +81,10 @@ class RegisterState extends ChangeNotifier {
 
   void reset() {
     _selectedTabIndex = 0;
-    fname = '';
-    lname = '';
-    email = '';
-    phone = '';
+    // fname = '';
+    // lname = '';
+    // email = '';
+    // phone = '';
     notifyListeners();
   }
 

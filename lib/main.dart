@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qcdart/auth/app_router.dart';
+import 'package:qcdart/state/audit_planning.dart';
+import 'package:qcdart/state/audit_planning_detail.dart';
 import 'package:qcdart/state/check_list_clause_list_state.dart';
 import 'package:qcdart/state/manage_plant_state.dart';
 import 'package:qcdart/state/manage_plants_state.dart';
 import 'package:qcdart/state/register_state.dart';
+import 'package:qcdart/state/user_detail_state.dart';
+import 'package:qcdart/state/user_list_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +17,11 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => RegisterState()),
       ChangeNotifierProvider(create: (context) => ManagePlantsState()),
       ChangeNotifierProvider(create: (context) => CheckListClauseListState()),
-      ChangeNotifierProvider(create: (context) => ManagePlantState())
+      ChangeNotifierProvider(create: (context) => ManagePlantState()),
+      ChangeNotifierProvider(create: (context) => UserListState()),
+      ChangeNotifierProvider(create: (context) => UserDetailState()),
+      ChangeNotifierProvider(create: (context) => AuditPlanningState()),
+      ChangeNotifierProvider(create: (context) => AuditPlanningDetailState())
     ],
     child: const MyApp(),
   ));

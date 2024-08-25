@@ -4,7 +4,22 @@ class ManagePlantState extends ChangeNotifier {
   //-------------------
   // List of plants
   //-------------------
-  List<Plant> _list = [];
+  List<Plant> _list = [
+    Plant(
+      orgId: '1',
+      plantName: 'Plant 1',
+      plantId: '1',
+      plantType: 'Type 1',
+      email: 'email;@example.com',
+      mobile: '1234567890',
+      country: 'India',
+      state: 'State 1',
+      city: 'City 1',
+      pincode: '123456',
+      contactName: 'Contact Name 1',
+      address: 'Address 1',
+    ),
+  ];
   get list => _list;
   set list(value) {
     _list = value;

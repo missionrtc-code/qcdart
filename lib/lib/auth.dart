@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:qcdart/lib/host.dart';
 
-FutureOr<String?> login(String email, String password) async {
+FutureOr<String?> login(BuildContext context, String email, String password) async {
   try {
     final response = await http.post(
       Uri.parse('$baseUrl/login'),
@@ -20,7 +21,12 @@ FutureOr<String?> login(String email, String password) async {
       final responseData = jsonDecode(response.body);
       return responseData['token'];
     } else {
-      print('Failed to login: ${response.statusCode}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Invalid email or password'),
+        ),
+      );
+      // print('Failed to login: ${response.statusCode}');
     }
   } catch (e) {
     print('Error during login: $e');

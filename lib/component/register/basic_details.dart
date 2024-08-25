@@ -3,10 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:qcdart/auth/app_router.dart';
 import 'package:qcdart/state/register_state.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class BasicDetails extends StatefulWidget {
-
-  const BasicDetails({super.key,});
+  const BasicDetails({
+    super.key,
+  });
 
   @override
   State<BasicDetails> createState() => _BasicDetailsState();
@@ -14,6 +16,7 @@ class BasicDetails extends StatefulWidget {
 
 class _BasicDetailsState extends State<BasicDetails> {
   final _formKey = GlobalKey<FormState>();
+  FocusNode focusNode = FocusNode();
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _emailController;
@@ -48,7 +51,7 @@ class _BasicDetailsState extends State<BasicDetails> {
         return Form(
           key: _formKey,
           child: Column(
-            children: [
+            children: <Widget>[
               const Align(
                 alignment: AlignmentDirectional.topStart,
                 child: Text(
@@ -111,23 +114,40 @@ class _BasicDetailsState extends State<BasicDetails> {
                 },
               ),
               const SizedBox(height: 10),
-              TextFormField(
-                controller: _phoneController,
-                key: const Key('phone'),
-                decoration: const InputDecoration(
-                  labelText: 'Mobile',
-                  border: OutlineInputBorder(),
+              IntlPhoneField(
+                focusNode: focusNode,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(),
+                  ),
                 ),
-                validator: (value) {
-                  if (value!.isEmpty || value.length < 10) {
-                    return 'Please enter a valid mobile number';
-                  }
-                  return null;
+                languageCode: "en",
+                onChanged: (phone) {
+                  print(phone.completeNumber);
                 },
-                onSaved: (newValue) {
-                  registerState.setPhone(newValue!);
+                onCountryChanged: (country) {
+                  print('Country changed to: ' + country.name);
                 },
               ),
+
+              // TextFormField(
+              //   controller: _phoneController,
+              //   key: const Key('phone'),
+              //   decoration: const InputDecoration(
+              //     labelText: 'Mobile',
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   validator: (value) {
+              //     if (value!.isEmpty || value.length < 10) {
+              //       return 'Please enter a valid mobile number';
+              //     }
+              //     return null;
+              //   },
+              //   onSaved: (newValue) {
+              //     registerState.setPhone(newValue!);
+              //   },
+              // ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

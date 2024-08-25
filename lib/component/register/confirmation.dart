@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:qcdart/state/register_state.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -41,7 +42,7 @@ class _ConfirmationState extends State<Confirmation> {
             Row(
               children: [
                 FilledButton(onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                  context.pop();
                 }, child: const Text('Done')),
               ],
             )

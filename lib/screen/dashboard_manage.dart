@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:qcdart/auth/app_router.dart';
 import 'package:qcdart/component/dashboard_app_bar.dart';
 import 'package:qcdart/component/dashboard_app_drawer.dart';
 import 'package:qcdart/state/check_list_clause_list_state.dart';
@@ -181,7 +183,9 @@ class _DashboardManageScreenState extends State<DashboardManageScreen> {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed('/dashboard/manage/edit');
+                  context.goNamed(
+                      RoutePath.dashboardChecklistManagementDetail.name,
+                      pathParameters: {'id': 'NEW'});
                 }
               },
             ),

@@ -14,53 +14,60 @@ class MyDashboardDrawer extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(child: Image.asset('assets/logo.png')),
           ListTile(
-            title: Text('Dashboard'),
+            title: const Text('Dashboard'),
             onTap: () {
               context.goNamed(RoutePath.dashboard.name);
             },
           ),
           ExpansionTile(
-            title: Text('Manage'),
+            title: const Text('Manage'),
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.arrow_circle_right_outlined),
-                title: Text('Plant Management'),
+                leading: const Icon(Icons.arrow_circle_right_outlined),
+                title: const Text('Plant Management'),
                 onTap: () {
                   context.goNamed(RoutePath.dashboardPlantManagement.name);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.arrow_circle_right_outlined),
-                title: Text('User Management'),
+                leading: const Icon(Icons.arrow_circle_right_outlined),
+                title: const Text('User Management'),
                 onTap: () {
+                  context.goNamed(RoutePath.dashboardUserManagement.name);
                   // Navigator.pushNamed(context, '/manage/user');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.arrow_circle_right_outlined),
-                title: Text('Checklist Management'),
+                leading: const Icon(Icons.arrow_circle_right_outlined),
+                title: const Text('Checklist Management'),
                 onTap: () {
-                  // Navigator.pushNamed(context, '/manage/checklist');
+                  context.goNamed(RoutePath.dashboardChecklistManagement.name);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.arrow_circle_right_outlined),
-                title: Text('Audit Planning'),
+                leading: const Icon(Icons.arrow_circle_right_outlined),
+                title: const Text('Audit Planning'),
                 onTap: () {
-                  // Navigator.pushNamed(context, '/manage/audit_planning');
+                  context.goNamed(RoutePath.dashboardAuditPlanning.name);
                 },
               ),
-              ListTile(
-                leading: Icon(Icons.arrow_circle_right_outlined),
-                title: Text('Audit Execution'),
-                onTap: () {
-                  // Navigator.pushNamed(context, '/manage/audit_execution');
-                },
-              ),
+              // ListTile(
+              //   leading: const Icon(Icons.arrow_circle_right_outlined),
+              //   title: const Text('Audit Execution'),
+              //   onTap: () {
+              //     context.goNamed(RoutePath.dashboardAuditExecution.name);
+              //   },
+              // ),
             ],
           ),
           ListTile(
-            title: Text('Logout'),
+            title: const Text('Audit Execution'),
+            onTap: () async {
+              context.goNamed(RoutePath.dashboardAuditExecution.name);
+            },
+          ),
+          ListTile(
+            title: const Text('Logout'),
             onTap: () async {
               removeToken();
               context.goNamed(RoutePath.signIn.name);

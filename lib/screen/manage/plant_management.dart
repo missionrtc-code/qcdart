@@ -66,6 +66,13 @@ class _PlantManagementScreenState extends State<PlantManagementScreen> {
                                   state.list[index].dateOfLastUpdate),
                               _buildCardRow(
                                   'Updated by', state.list[index].updatedBy),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(onPressed: () => state.removePlant(state.list[index]), icon: const Icon(Icons.edit)),
+                                  IconButton(onPressed: () => {}, icon: const Icon(Icons.delete)),
+                                ],
+                              )
                             ],
                           ),
                         ),

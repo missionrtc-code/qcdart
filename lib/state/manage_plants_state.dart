@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
 class ManagePlantsState extends ChangeNotifier {
-  List<Plants> _list = [];
+  List<Plants> _list = [
+    Plants(
+      plantName: 'Plant 1',
+      plantType: ['Type 1', 'Type 2'],
+      dateOfLastUpdate: '2022-01-01',
+      updatedBy: 'Admin',
+    ),
+    Plants(
+      plantName: 'Plant 2',
+      plantType: ['Type 1', 'Type 2'],
+      dateOfLastUpdate: '2022-01-01',
+      updatedBy: 'Admin',
+    ),
+  ];
   String _plantName = '';
   
   String get plantName => _plantName;

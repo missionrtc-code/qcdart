@@ -30,8 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _login() async {
-    final token = await login(_emailController.text, _passwordController.text);
+  Future<void> _login(BuildContext context) async {
+    final token = await login(context, _emailController.text, _passwordController.text);
     if (token == null) return;
     final expirationTime = DateTime.now().add(const Duration(hours: 1));
     addToken(token, expirationTime);
@@ -144,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
                                         _formKey.currentState!.save();
-                                        _login();
+                                        _login(context);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(

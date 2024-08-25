@@ -68,11 +68,11 @@ class _PlantManagementEditScreenState extends State<PlantManagementEditScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  ElevatedButton(
+                                  IconButton(
                                     onPressed: () {
                                       managePlantState.removePlant(data);
                                     },
-                                    child: const Text('Delete'),
+                                    icon: const Icon(Icons.delete),
                                   ),
                                 ],
                               ),
